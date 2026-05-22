@@ -37,8 +37,7 @@ flowchart LR
     R -->|Returns JSON Results| BE
     BE -->|Generates PDF Artifact| BE
     BE -->|Visualizes Data & File| FE
-
-
+```mermaid
 🛠️ Technology Stack
 Backend: Python, FastAPI, Uvicorn, Pydantic
 
