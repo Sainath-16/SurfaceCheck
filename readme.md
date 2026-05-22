@@ -16,7 +16,6 @@ The system features a decoupled architecture: a high-performance **FastAPI (Pyth
 * **Intelligent Scoring:** Categorizes findings by severity (Critical, High, Medium) and provides actionable remediation instructions for developers.
 * **Automated PDF Reporting:** Generates clean, downloadable PDF security reports summarizing the scan results for stakeholders or SecOps teams.
 
-## 🏗️ System Architecture
 
 ## 🏗️ System Architecture
 
