@@ -40,6 +40,7 @@ flowchart LR
     BE -->|Visualizes Data & File| FE
 ```
 🛠️ Technology Stack
+
 Backend: Python, FastAPI, Uvicorn, Pydantic
 
 Security Tooling: python-nmap (wrapper for system Nmap), requests
@@ -49,6 +50,7 @@ Artifact Generation: fpdf2
 Frontend: Next.js (App Router), React, Tailwind CSS
 
 🚀 Getting Started
+
 To run SurfaceCheck locally, you need to configure both the backend API and the frontend dashboard.
 
 Prerequisites
