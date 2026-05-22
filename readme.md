@@ -18,6 +18,8 @@ The system features a decoupled architecture: a high-performance **FastAPI (Pyth
 
 ## 🏗️ System Architecture
 
+## 🏗️ System Architecture
+
 ```mermaid
 flowchart LR
     U[User Browser] -->|Inputs Target URL| FE[Next.js Dashboard]
@@ -37,7 +39,7 @@ flowchart LR
     R -->|Returns JSON Results| BE
     BE -->|Generates PDF Artifact| BE
     BE -->|Visualizes Data & File| FE
-```mermaid
+```
 🛠️ Technology Stack
 Backend: Python, FastAPI, Uvicorn, Pydantic
 
