@@ -15,9 +15,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SurfaceCheck — Website Security Scanner",
+  title: "SurfaceCheck — Automated Attack Surface Analyzer",
   description:
-    "Check if your website has security issues. Get plain-English explanations and step-by-step fixes in seconds.",
+    "Check your website for security vulnerabilities. Get plain-English explanations and step-by-step developer fixes in seconds.",
 };
 
 export default function RootLayout({
@@ -28,9 +28,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased dark bg-[#030508] text-[#eef2ff]`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col bg-[#030508] text-[#eef2ff] selection:bg-cyan-500/30 selection:text-white">
+        {children}
+      </body>
     </html>
   );
 }

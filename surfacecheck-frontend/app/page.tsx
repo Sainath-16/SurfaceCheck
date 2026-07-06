@@ -85,7 +85,7 @@ function Counter({ to, suffix = "" }: { to: number; suffix?: string }) {
 
 function AmbientBackground() {
   return (
-    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden>
+    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden bg-[#030508]" aria-hidden>
       {/* Cyber Cyan Orb */}
       <div
         className="absolute w-[600px] h-[600px] -top-[150px] -left-[100px] rounded-full opacity-20 anim-float-slow blur-[120px]"
@@ -433,7 +433,7 @@ export default function HomePage() {
   const score = results ? Math.round((totalP / Math.max(totalV + totalP, 1)) * 100) : 0;
 
   return (
-    <div className="min-h-screen relative font-sans text-slate-100">
+    <div className="min-h-screen relative font-sans text-slate-100 bg-[#030508] bg-gradient-to-b from-[#0a0f1d] via-[#030508] to-[#010204] overflow-hidden">
       <AmbientBackground />
 
       {/* ── TOP NAVBAR ── */}
