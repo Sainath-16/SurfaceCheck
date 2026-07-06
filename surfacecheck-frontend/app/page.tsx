@@ -14,6 +14,7 @@ interface Vulnerability {
   description: string;
   remediation: string;
 }
+
 interface PassedCheck {
   header?: string;
   value?: string;
@@ -21,46 +22,51 @@ interface PassedCheck {
   service?: string;
   state?: string;
 }
+
 interface ScannerResult {
   scanner: string;
   vulnerabilities: Vulnerability[];
   passed: PassedCheck[];
 }
+
 interface ScanResponse {
   findings: ScannerResult[];
 }
 
 /* ================================================================ */
-/*  Severity config                                                  */
+/*  Severity Badges                                                  */
 /* ================================================================ */
 
-const SEV: Record<string, { bg: string; text: string; ring: string; dot: string; label: string }> = {
-  Critical: { bg: "bg-red-500/8",    text: "text-red-400",    ring: "ring-red-500/25",    dot: "bg-red-500",    label: "CRITICAL" },
-  High:     { bg: "bg-orange-500/8",  text: "text-orange-400", ring: "ring-orange-500/25", dot: "bg-orange-400", label: "HIGH" },
-  Medium:   { bg: "bg-amber-500/8",   text: "text-amber-400",  ring: "ring-amber-500/25",  dot: "bg-amber-400",  label: "MEDIUM" },
-  Low:      { bg: "bg-sky-500/8",     text: "text-sky-400",    ring: "ring-sky-500/25",    dot: "bg-sky-400",    label: "LOW" },
+const SEV: Record<string, { bg: string; text: string; border: string; dot: string; label: string }> = {
+  Critical: { bg: "bg-red-500/10", text: "text-red-400", border: "border-red-500/30", dot: "bg-red-500", label: "CRITICAL" },
+  High: { bg: "bg-orange-500/10", text: "text-orange-400", border: "border-orange-500/30", dot: "bg-orange-400", label: "HIGH" },
+  Medium: { bg: "bg-amber-500/10", text: "text-amber-400", border: "border-amber-500/30", dot: "bg-amber-400", label: "MEDIUM" },
+  Low: { bg: "bg-blue-500/10", text: "text-blue-400", border: "border-blue-500/30", dot: "bg-blue-400", label: "LOW" },
 };
 
 function Badge({ severity }: { severity: string }) {
   const s = SEV[severity] ?? SEV.Low;
   return (
-    <span className={`inline-flex items-center gap-1.5 px-2.5 py-[3px] rounded-md text-[10px] font-bold tracking-widest ring-1 ${s.bg} ${s.text} ${s.ring} select-none`}>
-      <span className={`w-[5px] h-[5px] rounded-full ${s.dot} animate-pulse`} />
+    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-[10px] font-mono font-extrabold tracking-widest border ${s.bg} ${s.text} ${s.border} shadow-[0_0_12px_rgba(0,0,0,0.3)] select-none`}>
+      <span className={`w-1.5 h-1.5 rounded-full ${s.dot} animate-pulse`} />
       {s.label}
     </span>
   );
 }
 
 /* ================================================================ */
-/*  Animated counter                                                 */
+/*  Animated Number Counter                                          */
 /* ================================================================ */
 
 function Counter({ to, suffix = "" }: { to: number; suffix?: string }) {
   const [n, setN] = useState(0);
   useEffect(() => {
-    if (to === 0) { setN(0); return; }
+    if (to === 0) {
+      setN(0);
+      return;
+    }
     let raf: number;
-    const dur = 900;
+    const dur = 1000;
     const t0 = performance.now();
     const tick = (now: number) => {
       const p = Math.min((now - t0) / dur, 1);
@@ -74,29 +80,41 @@ function Counter({ to, suffix = "" }: { to: number; suffix?: string }) {
 }
 
 /* ================================================================ */
-/*  Ambient background                                               */
+/*  Ambient Background Glows                                         */
 /* ================================================================ */
 
-function Ambient() {
+function AmbientBackground() {
   return (
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden>
-      <div className="absolute w-[600px] h-[600px] -top-[200px] left-[5%] rounded-full opacity-100 anim-float"
-        style={{ background: "radial-gradient(circle, rgba(110,168,254,0.04), transparent 70%)", animationDuration: "22s" }} />
-      <div className="absolute w-[500px] h-[500px] top-[20%] right-[-5%] rounded-full opacity-100 anim-float"
-        style={{ background: "radial-gradient(circle, rgba(167,139,250,0.03), transparent 70%)", animationDelay: "4s", animationDuration: "26s" }} />
-      <div className="absolute w-[400px] h-[400px] bottom-[5%] left-[30%] rounded-full opacity-100 anim-float"
-        style={{ background: "radial-gradient(circle, rgba(52,211,153,0.025), transparent 70%)", animationDelay: "8s", animationDuration: "20s" }} />
-      {/* Grid overlay */}
-      <div className="absolute inset-0" style={{
-        backgroundImage: "radial-gradient(circle, rgba(110,168,254,0.025) 1px, transparent 1px)",
-        backgroundSize: "36px 36px",
-      }} />
+      {/* Cyber Cyan Orb */}
+      <div
+        className="absolute w-[600px] h-[600px] -top-[150px] -left-[100px] rounded-full opacity-20 anim-float-slow blur-[120px]"
+        style={{ background: "radial-gradient(circle, rgba(0,240,255,0.4) 0%, transparent 70%)" }}
+      />
+      {/* Electric Violet Orb */}
+      <div
+        className="absolute w-[550px] h-[550px] top-[30%] -right-[150px] rounded-full opacity-25 anim-float blur-[140px]"
+        style={{ background: "radial-gradient(circle, rgba(139,92,246,0.4) 0%, transparent 70%)", animationDelay: "3s" }}
+      />
+      {/* Emerald Bottom Orb */}
+      <div
+        className="absolute w-[500px] h-[500px] -bottom-[150px] left-[25%] rounded-full opacity-15 anim-float-slow blur-[130px]"
+        style={{ background: "radial-gradient(circle, rgba(16,185,129,0.3) 0%, transparent 70%)", animationDelay: "6s" }}
+      />
+      {/* Subtle Grid Pattern */}
+      <div
+        className="absolute inset-0 opacity-20"
+        style={{
+          backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.15) 1px, transparent 1px)",
+          backgroundSize: "32px 32px",
+        }}
+      />
     </div>
   );
 }
 
 /* ================================================================ */
-/*  Passed checks accordion                                          */
+/*  Passed Checks Accordion                                          */
 /* ================================================================ */
 
 function PassedSection({ checks }: { checks: PassedCheck[] }) {
@@ -104,32 +122,51 @@ function PassedSection({ checks }: { checks: PassedCheck[] }) {
   if (checks.length === 0) return null;
 
   return (
-    <div className="mt-5 pt-5 border-t border-white/[0.04]">
+    <div className="mt-6 pt-6 border-t border-white/[0.06]">
       <button
         onClick={() => setOpen(!open)}
-        className="group flex items-center gap-2.5 text-[13px] text-emerald-400/90 hover:text-emerald-300 transition-colors cursor-pointer"
+        className="group flex items-center gap-2.5 text-xs font-mono font-bold text-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer w-full text-left"
       >
-        <svg className={`w-3.5 h-3.5 transition-transform duration-300 ease-out ${open ? "rotate-90" : ""}`}
-          fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-        </svg>
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+        <span className="w-5 h-5 rounded-md bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center group-hover:bg-emerald-500/20 transition-colors">
+          <svg
+            className={`w-3 h-3 transition-transform duration-300 ${open ? "rotate-90" : ""}`}
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2.5}
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
+        <svg className="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
         </svg>
-        <span className="font-semibold">{checks.length} check{checks.length !== 1 ? "s" : ""} passed — looking good!</span>
+        <span>{checks.length} Security Check{checks.length !== 1 ? "s" : ""} Passed</span>
+        <span className="ml-auto text-[10px] text-emerald-500/60 font-normal uppercase tracking-wider">
+          {open ? "Hide Details" : "View Details"}
+        </span>
       </button>
 
-      <div className={`grid transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${open ? "grid-rows-[1fr] opacity-100 mt-3" : "grid-rows-[0fr] opacity-0"}`}>
+      <div className={`grid transition-all duration-500 ease-out ${open ? "grid-rows-[1fr] opacity-100 mt-4" : "grid-rows-[0fr] opacity-0"}`}>
         <div className="overflow-hidden">
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             {checks.map((c, i) => (
-              <div key={i} className="flex items-center gap-3 rounded-lg bg-emerald-500/[0.04] border border-emerald-500/10 px-4 py-2.5 text-[13px] anim-slide-r" style={{ animationDelay: `${i * 50}ms` }}>
-                <span className="w-[6px] h-[6px] rounded-full bg-emerald-500/80 shrink-0" />
-                <span className="text-emerald-300/90 font-medium">
-                  {c.header ?? `Port ${c.port} (${c.service})`}
-                </span>
-                {c.value && <span className="text-muted/50 font-mono text-[11px] truncate max-w-[280px] ml-auto">{c.value}</span>}
-                {c.state && <span className="text-muted/50 text-[10px] ml-auto uppercase tracking-widest font-bold">{c.state}</span>}
+              <div
+                key={i}
+                className="flex items-center justify-between gap-3 rounded-xl bg-emerald-500/[0.04] border border-emerald-500/15 px-4 py-2.5 text-xs font-mono"
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+                  <span className="text-emerald-200 font-semibold truncate">
+                    {c.header ?? `Port ${c.port} (${c.service})`}
+                  </span>
+                </div>
+                {c.value && <span className="text-emerald-400/70 text-[11px] truncate max-w-[240px] ml-auto">{c.value}</span>}
+                {c.state && (
+                  <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 text-[10px] uppercase font-bold tracking-wider">
+                    {c.state}
+                  </span>
+                )}
               </div>
             ))}
           </div>
@@ -140,7 +177,7 @@ function PassedSection({ checks }: { checks: PassedCheck[] }) {
 }
 
 /* ================================================================ */
-/*  Scanner result card                                              */
+/*  Scanner Result Card                                              */
 /* ================================================================ */
 
 function ScanCard({ result, idx }: { result: ScannerResult; idx: number }) {
@@ -149,80 +186,91 @@ function ScanCard({ result, idx }: { result: ScannerResult; idx: number }) {
   const isHeader = result.scanner.toLowerCase().includes("header");
 
   return (
-    <div className="anim-fade-up" style={{ animationDelay: `${150 + idx * 120}ms` }}>
-      <div className="glow-border lift">
-        <div className="glass rounded-[19px] p-6 sm:p-7">
-          {/* Header */}
-          <div className="flex items-start justify-between gap-4 mb-6">
+    <div className="anim-fade-up" style={{ animationDelay: `${150 + idx * 150}ms` }}>
+      <div className="glow-border">
+        <div className="glass-card glass-card-hover rounded-[23px] p-6 sm:p-8">
+          {/* Section Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-6 border-b border-white/[0.06]">
             <div className="flex items-center gap-4">
-              {/* Icon */}
+              {/* Glowing Icon */}
               <div className="relative shrink-0">
-                <div className="absolute inset-0 rounded-2xl bg-accent/15 blur-xl" />
-                <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-accent/15 to-accent/5 border border-accent/15 flex items-center justify-center">
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 opacity-25 blur-lg" />
+                <div className="relative w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-800 border border-white/10 flex items-center justify-center shadow-inner">
                   {isHeader ? (
-                    <svg className="w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                    <svg className="w-6 h-6 text-cyan-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
                     </svg>
                   ) : (
-                    <svg className="w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                    <svg className="w-6 h-6 text-blue-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 14.25h13.5m-13.5 0a3 3 0 0 1-3-3m3 3a3 3 0 1 0 0 6h13.5a3 3 0 1 0 0-6m-16.5-3a3 3 0 0 1 3-3h13.5a3 3 0 0 1 3 3m-19.5 0a4.5 4.5 0 0 1 .9-2.7L5.737 5.1a3.375 3.375 0 0 1 2.7-1.35h7.126c1.062 0 2.062.5 2.7 1.35l2.587 3.45a4.5 4.5 0 0 1 .9 2.7m0 0a3 3 0 0 1-3 3m0 3h.008v.008h-.008v-.008Zm0-6h.008v.008h-.008v-.008Zm-3 6h.008v.008H15v-.008Zm0-6h.008v.008H15v-.008Z" />
                     </svg>
                   )}
                 </div>
               </div>
               <div>
-                <h3 className="text-[15px] font-bold text-foreground tracking-tight">{result.scanner}</h3>
-                <p className="text-[12px] text-muted mt-0.5">
-                  {v === 0 ? "No issues found" : `${v} issue${v !== 1 ? "s" : ""} need attention`} · {p} passed
+                <h3 className="text-lg font-bold text-white tracking-tight">{result.scanner}</h3>
+                <p className="text-xs font-mono text-indigo-300/70 mt-1">
+                  {v === 0 ? "No vulnerabilities found" : `${v} issue${v !== 1 ? "s" : ""} require attention`} · {p} passed
                 </p>
               </div>
             </div>
-            <div className="flex gap-1.5 flex-wrap justify-end">
+
+            {/* Severity Summary Badges */}
+            <div className="flex gap-2 flex-wrap sm:justify-end">
               {v === 0 ? (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-[3px] rounded-md text-[10px] font-bold tracking-widest bg-emerald-500/8 text-emerald-400 ring-1 ring-emerald-500/25">
-                  <span className="w-[5px] h-[5px] rounded-full bg-emerald-500 animate-pulse" /> ALL CLEAR
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-[10px] font-mono font-bold tracking-widest bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> ALL CLEAR
                 </span>
-              ) : [...new Set(result.vulnerabilities.map(x => x.severity))].map(s => <Badge key={s} severity={s} />)}
+              ) : (
+                [...new Set(result.vulnerabilities.map(x => x.severity))].map(s => <Badge key={s} severity={s} />)
+              )}
             </div>
           </div>
 
-          {/* Vulnerabilities */}
+          {/* Vulnerability Items */}
           {v > 0 && (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {result.vulnerabilities.map((vuln, i) => (
-                <div key={i}
-                  className="group rounded-2xl border border-white/[0.04] bg-white/[0.015] p-5 transition-all duration-300 hover:bg-white/[0.03] hover:border-white/[0.07] anim-fade-up"
-                  style={{ animationDelay: `${250 + idx * 120 + i * 70}ms` }}
+                <div
+                  key={i}
+                  className="rounded-2xl border border-white/10 bg-slate-900/60 p-6 transition-all duration-300 hover:border-white/20 hover:bg-slate-900/80 hover:shadow-xl"
                 >
-                  {/* Title + badge */}
-                  <div className="flex items-start justify-between gap-3 mb-3">
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <span className="w-[3px] h-5 rounded-full bg-gradient-to-b from-accent/80 to-accent/20 shrink-0" />
-                      <span className="font-semibold text-[13px] text-foreground truncate">
+                  {/* Title & Badge */}
+                  <div className="flex items-start justify-between gap-3 mb-4">
+                    <div className="flex items-center gap-3">
+                      <span className="w-1 h-6 rounded-full bg-gradient-to-b from-red-500 to-orange-500 shrink-0 shadow-[0_0_8px_rgba(239,68,68,0.6)]" />
+                      <span className="font-bold text-base text-white font-mono">
                         {vuln.header ?? `Port ${vuln.port} — ${vuln.service}`}
                       </span>
                     </div>
                     <Badge severity={vuln.severity} />
                   </div>
 
-                  {/* What's wrong */}
-                  <div className="pl-[18px] space-y-3">
-                    <div>
-                      <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted/50 mb-1.5">What this means</p>
-                      <p className="text-[13px] text-muted leading-[1.7]">{vuln.description}</p>
+                  <div className="pl-4 space-y-4">
+                    {/* What this means */}
+                    <div className="rounded-xl bg-black/40 border border-white/5 p-4">
+                      <p className="text-[11px] font-mono font-extrabold uppercase tracking-widest text-indigo-400 mb-1.5 flex items-center gap-1.5">
+                        <svg className="w-3.5 h-3.5 text-indigo-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+                        </svg>
+                        What This Means
+                      </p>
+                      <p className="text-sm text-slate-300 leading-relaxed">{vuln.description}</p>
                     </div>
 
                     {/* How to fix */}
-                    <div className="rounded-xl bg-accent/[0.04] border border-accent/[0.08] px-4 py-3.5 group-hover:bg-accent/[0.06] transition-colors">
+                    <div className="rounded-xl bg-gradient-to-r from-cyan-950/40 to-blue-950/40 border border-cyan-500/20 p-4 shadow-[0_0_20px_rgba(0,240,255,0.05)]">
                       <div className="flex items-start gap-3">
-                        <div className="w-7 h-7 rounded-lg bg-accent/10 flex items-center justify-center shrink-0 mt-0.5">
-                          <svg className="w-3.5 h-3.5 text-accent" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                        <div className="w-7 h-7 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center shrink-0 mt-0.5">
+                          <svg className="w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.049.58.025 1.194-.14 1.743" />
                           </svg>
                         </div>
                         <div>
-                          <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-accent/50 mb-1">How to fix it</p>
-                          <p className="text-[12px] text-accent/75 leading-[1.7]">{vuln.remediation}</p>
+                          <p className="text-[11px] font-mono font-extrabold uppercase tracking-widest text-cyan-400 mb-1">
+                            How To Fix It (Developer Remediation)
+                          </p>
+                          <p className="text-sm text-cyan-100/90 leading-relaxed font-mono">{vuln.remediation}</p>
                         </div>
                       </div>
                     </div>
@@ -232,6 +280,7 @@ function ScanCard({ result, idx }: { result: ScannerResult; idx: number }) {
             </div>
           )}
 
+          {/* Passed Section */}
           <PassedSection checks={result.passed} />
         </div>
       </div>
@@ -240,57 +289,72 @@ function ScanCard({ result, idx }: { result: ScannerResult; idx: number }) {
 }
 
 /* ================================================================ */
-/*  Scanning animation                                               */
+/*  Radar Scanning Animation                                         */
 /* ================================================================ */
 
-function Scanning() {
-  const [dots, setDots] = useState("");
+function ScanningRadar() {
   const [step, setStep] = useState(0);
-  const steps = ["Connecting to target", "Checking security headers", "Scanning network ports", "Analyzing results"];
+  const steps = [
+    "Establishing secure TCP handshake with target...",
+    "Inspecting HTTP response & security headers...",
+    "Probing network ports (FTP, SSH, Telnet, MySQL, RDP)...",
+    "Translating security risks into developer plain-English...",
+  ];
 
   useEffect(() => {
-    const d = setInterval(() => setDots(p => p.length >= 3 ? "" : p + "."), 350);
-    const s = setInterval(() => setStep(p => (p + 1) % steps.length), 2200);
-    return () => { clearInterval(d); clearInterval(s); };
-  }, []);
+    const s = setInterval(() => setStep(p => (p + 1) % steps.length), 2500);
+    return () => clearInterval(s);
+  }, [steps.length]);
 
   return (
-    <div className="flex flex-col items-center justify-center py-24 gap-10 anim-scale-in">
-      {/* Radar */}
-      <div className="relative w-28 h-28">
-        <div className="absolute inset-0 rounded-full border border-accent/8" />
-        <div className="absolute inset-3 rounded-full border border-accent/12" />
-        <div className="absolute inset-6 rounded-full border border-accent/8" />
-        <div className="absolute inset-9 rounded-full border border-accent/5" />
+    <div className="flex flex-col items-center justify-center py-20 gap-8 anim-scale-in">
+      {/* High-Tech Radar */}
+      <div className="relative w-36 h-36 flex items-center justify-center">
+        {/* Outer Pulsing Rings */}
+        <div className="absolute inset-0 rounded-full border border-cyan-500/20 anim-ping-ring" />
+        <div className="absolute inset-2 rounded-full border border-blue-500/30 anim-ping-ring" style={{ animationDelay: "0.8s" }} />
 
-        {/* Ping rings */}
-        <div className="absolute inset-0 rounded-full border-2 border-accent/15" style={{ animation: "ring-ping 2.2s ease-out infinite" }} />
-        <div className="absolute inset-0 rounded-full border-2 border-accent/15" style={{ animation: "ring-ping 2.2s ease-out 0.7s infinite" }} />
+        {/* Static Sonar Grid */}
+        <div className="absolute inset-4 rounded-full border border-white/10 bg-slate-950/80 shadow-2xl" />
+        <div className="absolute inset-10 rounded-full border border-white/10" />
+        <div className="absolute inset-16 rounded-full border border-white/10" />
+        <div className="absolute w-full h-[1px] bg-white/10" />
+        <div className="absolute h-full w-[1px] bg-white/10" />
 
-        {/* Sweep */}
-        <div className="absolute inset-0" style={{ animation: "radar-sweep 2.2s linear infinite" }}>
-          <div className="absolute top-1/2 left-1/2 w-1/2 h-[2px] origin-left -translate-y-1/2"
-            style={{ background: "linear-gradient(90deg, rgba(110,168,254,0.7), transparent)" }} />
+        {/* Rotating Radar Sweep */}
+        <div className="absolute inset-4 rounded-full overflow-hidden anim-radar">
+          <div
+            className="absolute top-0 right-0 w-1/2 h-1/2 origin-bottom-left"
+            style={{
+              background: "linear-gradient(135deg, rgba(0,240,255,0.6) 0%, rgba(0,240,255,0.1) 60%, transparent 100%)",
+            }}
+          />
         </div>
 
-        {/* Center */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-3 h-3 rounded-full bg-accent shadow-[0_0_16px_rgba(110,168,254,0.5)] animate-pulse" />
-        </div>
+        {/* Center Node */}
+        <div className="relative w-4 h-4 rounded-full bg-cyan-400 shadow-[0_0_20px_#00f0ff] animate-pulse" />
 
-        {/* Blips */}
-        <div className="absolute top-[22%] left-[62%] w-[6px] h-[6px] rounded-full bg-accent/50 animate-pulse" style={{ animationDelay: "0.4s" }} />
-        <div className="absolute top-[58%] left-[24%] w-[5px] h-[5px] rounded-full bg-violet-400/40 animate-pulse" style={{ animationDelay: "1s" }} />
+        {/* Sonar Blips */}
+        <div className="absolute top-[25%] left-[65%] w-2 h-2 rounded-full bg-red-400 shadow-[0_0_10px_#f87171] animate-ping" style={{ animationDuration: "3s" }} />
+        <div className="absolute top-[65%] left-[30%] w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_10px_#34d399] animate-ping" style={{ animationDuration: "4s", animationDelay: "1s" }} />
       </div>
 
-      <div className="text-center space-y-3">
-        <p className="text-lg font-bold text-foreground tracking-tight">Scanning your website{dots}</p>
-        <p className="text-[13px] text-muted h-5 transition-opacity duration-300">{steps[step]}</p>
+      {/* Terminal Log Output */}
+      <div className="text-center space-y-3 max-w-md">
+        <h3 className="text-xl font-bold font-mono text-white tracking-tight flex items-center justify-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
+          SCAN IN PROGRESS...
+        </h3>
+        <div className="rounded-xl bg-black/60 border border-white/10 px-5 py-3 font-mono text-xs text-cyan-300 shadow-inner">
+          <p className="animate-pulse">&gt; {steps[step]}</p>
+        </div>
 
-        {/* Progress bar */}
-        <div className="w-52 h-[3px] rounded-full bg-white/[0.04] mx-auto mt-4 overflow-hidden">
-          <div className="h-full w-1/3 rounded-full bg-gradient-to-r from-accent to-violet-400"
-            style={{ animation: "progress-indeterminate 1.5s ease-in-out infinite" }} />
+        {/* Indeterminate Bar */}
+        <div className="w-64 h-1.5 rounded-full bg-white/10 mx-auto overflow-hidden">
+          <div
+            className="h-full w-1/3 rounded-full bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500"
+            style={{ animation: "float 1.5s ease-in-out infinite alternate" }}
+          />
         </div>
       </div>
     </div>
@@ -298,18 +362,18 @@ function Scanning() {
 }
 
 /* ================================================================ */
-/*  Main page                                                        */
+/*  Main Dashboard Component                                         */
 /* ================================================================ */
 
 export default function HomePage() {
-  const [url, setUrl]                       = useState("");
-  const [loading, setLoading]               = useState(false);
-  const [error, setError]                   = useState<string | null>(null);
-  const [results, setResults]               = useState<ScannerResult[] | null>(null);
-  const [scannedUrl, setScannedUrl]         = useState("");
-  const [downloading, setDownloading]       = useState(false);
-  const [mounted, setMounted]               = useState(false);
-  const resultsRef                          = useRef<HTMLDivElement>(null);
+  const [url, setUrl] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [results, setResults] = useState<ScannerResult[] | null>(null);
+  const [scannedUrl, setScannedUrl] = useState("");
+  const [downloading, setDownloading] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const resultsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => setMounted(true), []);
 
@@ -326,14 +390,14 @@ export default function HomePage() {
       });
       if (!res.ok) {
         const b = await res.json().catch(() => null);
-        throw new Error(b?.detail ?? `Server responded with ${res.status}`);
+        throw new Error(b?.detail ?? `Server responded with status ${res.status}`);
       }
       const data: ScanResponse = await res.json();
       setResults(data.findings);
       setScannedUrl(url);
       setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setError(err instanceof Error ? err.message : "Something went wrong while connecting to the scan server.");
     } finally {
       setLoading(false);
     }
@@ -348,17 +412,17 @@ export default function HomePage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ target_url: scannedUrl, findings: results }),
       });
-      if (!res.ok) throw new Error(`Report failed (${res.status})`);
+      if (!res.ok) throw new Error(`Report generation failed (${res.status})`);
       const blob = await res.blob();
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
-      a.download = "surfacecheck-report.pdf";
+      a.download = "surfacecheck-security-report.pdf";
       document.body.appendChild(a);
       a.click();
       a.remove();
       URL.revokeObjectURL(a.href);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to download report.");
+      setError(err instanceof Error ? err.message : "Failed to download PDF report.");
     } finally {
       setDownloading(false);
     }
@@ -369,98 +433,120 @@ export default function HomePage() {
   const score = results ? Math.round((totalP / Math.max(totalV + totalP, 1)) * 100) : 0;
 
   return (
-    <div className="min-h-screen relative">
-      <Ambient />
+    <div className="min-h-screen relative font-sans text-slate-100">
+      <AmbientBackground />
 
-      {/* ── NAVBAR ────────────────────────────────────────────── */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-3"}`}>
-        <div className="mx-auto max-w-5xl px-5 pt-4">
-          <div className="glass rounded-2xl px-5 py-3 flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-accent/10 flex items-center justify-center">
-                <svg className="w-[14px] h-[14px] text-accent" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+      {/* ── TOP NAVBAR ── */}
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
+        <div className="mx-auto max-w-6xl px-6 pt-5">
+          <div className="glass-card rounded-2xl px-6 py-3.5 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-600/20 border border-cyan-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(0,240,255,0.2)]">
+                <svg className="w-5 h-5 text-cyan-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
                 </svg>
               </div>
-              <span className="text-[13px] font-bold tracking-tight">SurfaceCheck</span>
+              <div>
+                <span className="text-base font-black tracking-tight text-white font-mono">SurfaceCheck</span>
+                <span className="hidden sm:inline-block ml-2 px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">
+                  v1.0.0
+                </span>
+              </div>
             </div>
-            <div className="flex items-center gap-3">
-              <span className="text-[11px] text-muted hidden sm:block">Website Security Scanner</span>
-              <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-emerald-500/8 ring-1 ring-emerald-500/15">
-                <span className="w-[5px] h-[5px] rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-[9px] font-bold text-emerald-400 tracking-widest">ONLINE</span>
+
+            <div className="flex items-center gap-4">
+              <span className="text-xs font-mono text-slate-400 hidden md:block">Automated Attack Surface Analyzer</span>
+              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 shadow-[0_0_12px_rgba(16,185,129,0.2)]">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-[10px] font-mono font-bold text-emerald-300 tracking-widest uppercase">SYSTEM READY</span>
               </div>
             </div>
           </div>
         </div>
       </nav>
 
-      {/* ── HERO ──────────────────────────────────────────────── */}
-      <header className="relative pt-32 pb-16 sm:pt-36 sm:pb-20">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] rounded-full bg-accent/[0.03] blur-[100px] pointer-events-none" />
-
-        <div className="relative mx-auto max-w-3xl px-6 text-center">
-          {/* Shield */}
-          <div className={`inline-block mb-8 transition-all duration-1000 ease-out ${mounted ? "opacity-100 scale-100" : "opacity-0 scale-75"}`}>
+      {/* ── HERO SECTION ── */}
+      <header className="relative pt-36 pb-20 sm:pt-44 sm:pb-24">
+        <div className="relative mx-auto max-w-4xl px-6 text-center">
+          {/* Cyber Shield Badge */}
+          <div className={`inline-block mb-6 transition-all duration-1000 ease-out ${mounted ? "opacity-100 scale-100" : "opacity-0 scale-75"}`}>
             <div className="relative">
-              <div className="absolute inset-0 rounded-[22px] bg-accent/12 blur-2xl animate-pulse" style={{ animationDuration: "3s" }} />
-              <div className="relative w-[72px] h-[72px] rounded-[22px] bg-gradient-to-br from-accent/15 via-accent/8 to-violet-500/8 border border-accent/15 flex items-center justify-center anim-float">
-                <svg className="w-8 h-8 text-accent" fill="none" viewBox="0 0 24 24" strokeWidth={1.2} stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+              <div className="absolute inset-0 rounded-2xl bg-cyan-500/20 blur-xl animate-pulse" />
+              <div className="relative px-4 py-1.5 rounded-full bg-slate-900/90 border border-cyan-500/30 flex items-center gap-2 shadow-lg">
+                <svg className="w-4 h-4 text-cyan-400 animate-spin" style={{ animationDuration: "10s" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
                 </svg>
+                <span className="text-xs font-mono font-bold text-cyan-300 tracking-wider">NEXT-GEN SECURITY AUDITING</span>
               </div>
             </div>
           </div>
 
-          {/* Title */}
-          <h1 className={`text-4xl sm:text-5xl lg:text-6xl font-black tracking-[-0.035em] leading-[1.1] transition-all duration-1000 ease-out d-200 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-            <span className="text-foreground">Check your website</span>
+          {/* Headline */}
+          <h1 className={`text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.1] transition-all duration-1000 ease-out ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            <span className="text-white">Audit Your Attack Surface</span>
             <br />
-            <span className="bg-gradient-to-r from-accent via-blue-300 to-violet-300 bg-clip-text text-transparent">security in seconds</span>
+            <span className="text-gradient-cyber">With Intelligent Scans</span>
           </h1>
 
-          <p className={`mt-5 text-[15px] sm:text-base text-muted max-w-lg mx-auto leading-relaxed transition-all duration-1000 ease-out d-400 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-            Enter any website address and we&apos;ll check it for common security problems.
-            You&apos;ll get clear explanations and step-by-step fixes anyone can understand.
+          <p className={`mt-6 text-base sm:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed transition-all duration-1000 delay-150 ease-out ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            Instantly inspect web targets for missing HTTP security headers and exposed TCP ports.
+            Get plain-English explanations, real-time risk grading, and downloadable PDF reports.
           </p>
 
-          {/* Pills */}
-          <div className={`mt-5 flex items-center justify-center gap-2 flex-wrap transition-all duration-1000 ease-out d-500 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-            {["Security Headers", "Port Scanning", "PDF Reports", "Plain English"].map(f => (
-              <span key={f} className="px-3 py-1.5 rounded-lg text-[11px] font-medium text-muted/70 bg-white/[0.025] ring-1 ring-white/[0.04]">{f}</span>
+          {/* Feature Badges */}
+          <div className={`mt-8 flex items-center justify-center gap-2.5 flex-wrap transition-all duration-1000 delay-300 ease-out ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            {[
+              { label: "Nmap TCP Port Analysis", color: "border-red-500/30 text-red-300 bg-red-500/5" },
+              { label: "HTTP Header Inspection", color: "border-cyan-500/30 text-cyan-300 bg-cyan-500/5" },
+              { label: "Plain-English Remediation", color: "border-emerald-500/30 text-emerald-300 bg-emerald-500/5" },
+              { label: "Executive PDF Reports", color: "border-purple-500/30 text-purple-300 bg-purple-500/5" },
+            ].map(f => (
+              <span key={f.label} className={`px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold border shadow-sm ${f.color}`}>
+                ⚡ {f.label}
+              </span>
             ))}
           </div>
 
-          {/* ── SCAN FORM ──────────────────────────────────────── */}
-          <form onSubmit={handleScan} className={`mt-10 transition-all duration-1000 ease-out d-600 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-            <div className="glow-border max-w-xl mx-auto">
-              <div className="glass rounded-[19px] p-2 flex flex-col sm:flex-row items-center gap-2">
+          {/* ── SCANNER FORM ── */}
+          <form onSubmit={handleScan} className={`mt-12 transition-all duration-1000 delay-500 ease-out ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            <div className="glow-border max-w-2xl mx-auto">
+              <div className="glass-card rounded-[23px] p-2.5 flex flex-col sm:flex-row items-center gap-3">
                 <div className="relative flex-1 w-full group">
-                  <div className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-muted/40 group-focus-within:text-accent transition-colors duration-300">
-                    <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                  <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-cyan-400 transition-colors">
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
                     </svg>
                   </div>
-                  <input id="target-url-input" type="url" value={url} onChange={e => setUrl(e.target.value)} required
+                  <input
+                    id="target-url-input"
+                    type="url"
+                    value={url}
+                    onChange={e => setUrl(e.target.value)}
+                    required
                     placeholder="https://example.com"
-                    className="w-full rounded-xl bg-transparent pl-10 pr-4 py-3.5 text-[13px] text-foreground placeholder:text-muted/30 outline-none" />
+                    className="w-full rounded-xl bg-slate-950/80 border border-white/5 pl-12 pr-4 py-4 text-sm font-mono text-white placeholder:text-slate-500 focus:border-cyan-500/50 focus:outline-none transition-all shadow-inner"
+                  />
                 </div>
-                <button id="run-scan-button" type="submit" disabled={loading}
-                  className="w-full sm:w-auto px-7 py-3.5 rounded-xl btn-glow text-[#0a0f1a] font-bold text-[13px] tracking-wide disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer shrink-0 hover:shadow-[0_0_24px_rgba(110,168,254,0.3)] active:scale-[0.97] transition-all">
+                <button
+                  id="run-scan-button"
+                  type="submit"
+                  disabled={loading}
+                  className="w-full sm:w-auto px-8 py-4 rounded-xl btn-cyber text-sm font-mono cursor-pointer shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
+                >
                   {loading ? (
-                    <span className="flex items-center gap-2">
+                    <span className="flex items-center justify-center gap-2">
                       <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
                       </svg>
-                      Scanning…
+                      SCANNING...
                     </span>
                   ) : (
-                    <span className="flex items-center gap-2">
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                    <span className="flex items-center justify-center gap-2">
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                       </svg>
-                      Scan Now
+                      INITIATE SCAN
                     </span>
                   )}
                 </button>
@@ -470,92 +556,113 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* ── MAIN ──────────────────────────────────────────────── */}
-      <main ref={resultsRef} className="relative z-10 mx-auto max-w-3xl px-5 pb-24">
-        {/* Error */}
+      {/* ── MAIN RESULTS AREA ── */}
+      <main ref={resultsRef} className="relative z-10 mx-auto max-w-4xl px-6 pb-28">
+        {/* Error Notification */}
         {error && (
-          <div className="mb-8 rounded-2xl border border-red-500/15 bg-red-500/[0.04] backdrop-blur-sm px-5 py-4 flex items-start gap-3 anim-scale-in">
-            <div className="w-9 h-9 rounded-xl bg-red-500/10 flex items-center justify-center shrink-0">
-              <svg className="w-4 h-4 text-red-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+          <div className="mb-8 rounded-2xl border border-red-500/30 bg-red-950/40 backdrop-blur-md p-6 flex items-start gap-4 shadow-[0_0_30px_rgba(239,68,68,0.15)] anim-scale-in">
+            <div className="w-10 h-10 rounded-xl bg-red-500/20 border border-red-500/40 flex items-center justify-center shrink-0">
+              <svg className="w-5 h-5 text-red-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
               </svg>
             </div>
             <div>
-              <p className="font-bold text-red-400 text-[13px]">Something went wrong</p>
-              <p className="text-[12px] text-red-400/60 mt-1 leading-relaxed">{error}</p>
+              <p className="font-mono font-bold text-red-300 text-sm uppercase tracking-wider">Scan Error Detected</p>
+              <p className="text-sm text-red-200/80 mt-1 leading-relaxed font-mono">{error}</p>
             </div>
           </div>
         )}
 
-        {loading && <Scanning />}
+        {/* Live Radar Scanner */}
+        {loading && <ScanningRadar />}
 
-        {/* Results */}
+        {/* Scan Results Dashboard */}
         {results && !loading && (
-          <div className="space-y-5">
-            {/* Summary */}
+          <div className="space-y-6">
+            {/* Executive Summary Card */}
             <div className="anim-fade-up">
               <div className="glow-border">
-                <div className="glass rounded-[19px] p-5 sm:p-6">
-                  <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
-                    <div className="flex items-center gap-5 flex-wrap">
-                      {/* Score ring */}
-                      <div className="relative w-[60px] h-[60px] shrink-0">
+                <div className="glass-card rounded-[23px] p-6 sm:p-8">
+                  <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                    <div className="flex items-center gap-6 flex-wrap">
+                      {/* Animated Score Gauge */}
+                      <div className="relative w-20 h-20 shrink-0">
                         <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
-                          <circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="3" />
-                          <circle cx="18" cy="18" r="15" fill="none"
-                            stroke={score >= 70 ? "#34d399" : score >= 40 ? "#fbbf24" : "#f87171"}
-                            strokeWidth="3" strokeLinecap="round"
+                          <circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="3.5" />
+                          <circle
+                            cx="18" cy="18" r="15" fill="none"
+                            stroke={score >= 70 ? "#10b981" : score >= 40 ? "#fbbf24" : "#ef4444"}
+                            strokeWidth="3.5"
+                            strokeLinecap="round"
                             strokeDasharray={`${score * 0.942} 100`}
-                            className="transition-all duration-1000 ease-out" />
+                            className="transition-all duration-1000 ease-out"
+                          />
                         </svg>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <span className={`text-sm font-black ${score >= 70 ? "text-emerald-400" : score >= 40 ? "text-amber-400" : "text-red-400"}`}>
+                        <div className="absolute inset-0 flex flex-col items-center justify-center">
+                          <span className={`text-xl font-black font-mono ${score >= 70 ? "text-emerald-400" : score >= 40 ? "text-amber-400" : "text-red-400"}`}>
                             <Counter to={score} />
                           </span>
+                          <span className="text-[9px] font-mono text-slate-400 font-bold uppercase">SCORE</span>
                         </div>
                       </div>
 
                       <div>
-                        <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted/50 mb-1">Scan complete</p>
-                        <p className="text-[13px] text-muted">
-                          <span className="font-mono text-accent/90">{scannedUrl}</span>
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-xs font-mono font-bold uppercase tracking-widest text-cyan-400">Security Audit Report</span>
+                          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
+                        </div>
+                        <p className="text-sm font-mono text-slate-300">
+                          Target: <span className="text-white font-bold underline decoration-cyan-500/50 underline-offset-4">{scannedUrl}</span>
                         </p>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-4 flex-wrap">
+                    <div className="flex items-center gap-6 flex-wrap w-full md:w-auto justify-between md:justify-end border-t md:border-t-0 pt-4 md:pt-0 border-white/10">
                       {/* Stats */}
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-9 h-9 rounded-xl bg-red-500/8 flex items-center justify-center">
-                          <span className="text-[15px] font-black text-red-400"><Counter to={totalV} /></span>
+                      <div className="flex items-center gap-3">
+                        <div className="w-11 h-11 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center shadow-[0_0_12px_rgba(239,68,68,0.2)]">
+                          <span className="text-lg font-black font-mono text-red-400"><Counter to={totalV} /></span>
                         </div>
                         <div>
-                          <p className="text-[11px] font-bold text-foreground leading-none">Issues</p>
-                          <p className="text-[9px] text-muted mt-0.5">found</p>
+                          <p className="text-xs font-mono font-bold text-white uppercase">Issues</p>
+                          <p className="text-[10px] font-mono text-slate-400">Detected</p>
                         </div>
                       </div>
 
-                      <div className="w-px h-8 bg-white/[0.04]" />
+                      <div className="w-px h-10 bg-white/10 hidden sm:block" />
 
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-9 h-9 rounded-xl bg-emerald-500/8 flex items-center justify-center">
-                          <span className="text-[15px] font-black text-emerald-400"><Counter to={totalP} /></span>
+                      <div className="flex items-center gap-3">
+                        <div className="w-11 h-11 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shadow-[0_0_12px_rgba(16,185,129,0.2)]">
+                          <span className="text-lg font-black font-mono text-emerald-400"><Counter to={totalP} /></span>
                         </div>
                         <div>
-                          <p className="text-[11px] font-bold text-foreground leading-none">Passed</p>
-                          <p className="text-[9px] text-muted mt-0.5">checks</p>
+                          <p className="text-xs font-mono font-bold text-white uppercase">Passed</p>
+                          <p className="text-[10px] font-mono text-slate-400">Checks</p>
                         </div>
                       </div>
 
-                      <div className="w-px h-8 bg-white/[0.04]" />
-
-                      {/* Download */}
-                      <button id="download-report-button" onClick={handleDownload} disabled={downloading}
-                        className="group inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-accent/8 text-accent text-[12px] font-bold hover:bg-accent/15 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer ring-1 ring-accent/15 hover:ring-accent/30 hover:shadow-[0_0_16px_rgba(110,168,254,0.1)] active:scale-[0.97] transition-all">
+                      {/* PDF Report Button */}
+                      <button
+                        id="download-report-button"
+                        onClick={handleDownload}
+                        disabled={downloading}
+                        className="group flex items-center gap-2.5 px-5 py-3 rounded-xl bg-gradient-to-r from-purple-600/30 to-blue-600/30 border border-purple-500/40 text-purple-200 text-xs font-mono font-bold hover:border-purple-400 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shadow-[0_0_20px_rgba(139,92,246,0.15)] hover:shadow-[0_0_25px_rgba(139,92,246,0.3)] transition-all active:scale-95"
+                      >
                         {downloading ? (
-                          <><svg className="w-3.5 h-3.5 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/></svg>Generating…</>
+                          <>
+                            <svg className="w-4 h-4 animate-spin text-purple-300" viewBox="0 0 24 24" fill="none">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                            </svg>
+                            GENERATING PDF...
+                          </>
                         ) : (
-                          <><svg className="w-3.5 h-3.5 group-hover:animate-bounce" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>PDF Report</>
+                          <>
+                            <svg className="w-4 h-4 text-purple-400 group-hover:animate-bounce" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                            </svg>
+                            DOWNLOAD PDF REPORT
+                          </>
                         )}
                       </button>
                     </div>
@@ -564,29 +671,37 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Cards */}
-            {results.map((r, i) => <ScanCard key={i} result={r} idx={i} />)}
+            {/* Individual Scanner Cards */}
+            {results.map((r, i) => (
+              <ScanCard key={i} result={r} idx={i} />
+            ))}
           </div>
         )}
 
-        {/* Empty */}
+        {/* Empty State */}
         {!loading && !results && !error && (
-          <div className="text-center py-24 anim-fade-up">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl glass mb-5">
-              <svg className="w-6 h-6 text-muted/30" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor">
+          <div className="text-center py-28 anim-fade-up">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl glass-card mb-6 shadow-2xl border border-white/10">
+              <svg className="w-8 h-8 text-cyan-400/60 animate-pulse" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
               </svg>
             </div>
-            <p className="text-muted/40 text-[13px]">Enter a website address above to start your scan</p>
+            <h3 className="text-lg font-mono font-bold text-white tracking-tight">Ready for Security Inspection</h3>
+            <p className="text-slate-400 text-sm font-mono mt-2 max-w-sm mx-auto">
+              Enter any target web address above to initiate an automated attack surface evaluation.
+            </p>
           </div>
         )}
       </main>
 
-      {/* ── FOOTER ────────────────────────────────────────────── */}
-      <footer className="relative z-10 border-t border-white/[0.03]">
-        <div className="mx-auto max-w-3xl px-6 py-7 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-muted/35">
-          <span className="font-medium">SurfaceCheck v1.0</span>
-          <span>Powered by Nmap &amp; Python · Built with Next.js</span>
+      {/* ── FOOTER ── */}
+      <footer className="relative z-10 border-t border-white/5 bg-slate-950/60 backdrop-blur-md">
+        <div className="mx-auto max-w-6xl px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-500">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-cyan-400" />
+            <span className="font-bold text-slate-400">SurfaceCheck Security Engine</span>
+          </div>
+          <span>Powered by Nmap TCP Engine &amp; FastAPI · Built with Next.js &amp; Tailwind CSS v4</span>
         </div>
       </footer>
     </div>
