@@ -80,7 +80,88 @@ function Counter({ to, suffix = "" }: { to: number; suffix?: string }) {
 }
 
 /* ================================================================ */
-/*  Ambient Background Glows                                         */
+/*  Techie Signal Waveform Widget                                    */
+/* ================================================================ */
+
+function SignalWaveform() {
+  return (
+    <div className="flex items-end gap-1 h-5 px-2 py-1 rounded bg-slate-950/80 border border-cyan-500/20 shadow-inner">
+      <span className="w-1 bg-cyan-400 rounded-full anim-wave-1 shadow-[0_0_8px_#00f0ff]" />
+      <span className="w-1 bg-blue-500 rounded-full anim-wave-2 shadow-[0_0_8px_#3b82f6]" />
+      <span className="w-1 bg-purple-500 rounded-full anim-wave-3 shadow-[0_0_8px_#8b5cf6]" />
+      <span className="w-1 bg-cyan-400 rounded-full anim-wave-1 shadow-[0_0_8px_#00f0ff]" />
+    </div>
+  );
+}
+
+/* ================================================================ */
+/*  Live Cyber Telemetry Terminal                                    */
+/* ================================================================ */
+
+function CyberTelemetryConsole() {
+  const logs = [
+    "[SYS_AUDIT] TCP SYN port scanning engine initialized... [OK]",
+    "[AI_HEURISTICS] Security headers analysis engine online... [READY]",
+    "[SSL_INSPECT] Transport Layer Security cipher suites... [VERIFIED]",
+    "[THREAT_INTEL] CVE vulnerability database synced... [140,291 RECORDS]",
+    "[NET_MONITOR] Anomaly detection heuristics... [ACTIVE]",
+  ];
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const i = setInterval(() => setIndex(p => (p + 1) % logs.length), 3000);
+    return () => clearInterval(i);
+  }, [logs.length]);
+
+  return (
+    <div className="w-full max-w-2xl mx-auto mb-8 rounded-xl bg-slate-950/90 border border-cyan-500/30 p-3.5 shadow-[0_0_25px_rgba(0,240,255,0.1)] font-mono text-xs flex items-center justify-between gap-3 overflow-hidden">
+      <div className="flex items-center gap-2.5 shrink-0">
+        <div className="flex gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
+          <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80 animate-pulse" />
+        </div>
+        <span className="text-slate-500 text-[10px] hidden sm:inline">SOC_CONSOLE // LIVE</span>
+      </div>
+      <div className="text-cyan-300/90 truncate flex-1 font-semibold text-right sm:text-left flex items-center gap-2">
+        <span className="text-cyan-500">&gt;</span>
+        <span className="truncate">{logs[index]}</span>
+        <span className="w-1.5 h-3 bg-cyan-400 animate-pulse inline-block" />
+      </div>
+      <SignalWaveform />
+    </div>
+  );
+}
+
+/* ================================================================ */
+/*  High-Tech Cyber Metrics Bar                                      */
+/* ================================================================ */
+
+function CyberMetricsBar() {
+  const metrics = [
+    { label: "SCAN VELOCITY", val: "<150ms", color: "text-cyan-400" },
+    { label: "TCP ENGINE", val: "NMAP 7.94", color: "text-blue-400" },
+    { label: "VULN DATABASE", val: "140,000+ CVEs", color: "text-purple-400" },
+    { label: "HEURISTICS", val: "AI-ENHANCED", color: "text-emerald-400" },
+  ];
+
+  return (
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto mt-10">
+      {metrics.map((m, i) => (
+        <div key={i} className="rounded-xl bg-slate-950/60 border border-white/10 p-3 flex flex-col items-center justify-center text-center shadow-inner hover:border-cyan-500/30 transition-colors">
+          <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
+            {m.label}
+          </span>
+          <span className={`text-sm font-mono font-black mt-1 ${m.color}`}>{m.val}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ================================================================ */
+/*  Ambient Cyber Background with Laser Scanline                     */
 /* ================================================================ */
 
 function AmbientBackground() {
@@ -105,10 +186,20 @@ function AmbientBackground() {
       <div
         className="absolute inset-0 opacity-20"
         style={{
-          backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.15) 1px, transparent 1px)",
+          backgroundImage: "radial-gradient(circle, rgba(0,240,255,0.2) 1px, transparent 1px)",
           backgroundSize: "32px 32px",
         }}
       />
+      {/* Techie Laser Scanline */}
+      <div className="absolute inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_15px_#00f0ff] opacity-40 anim-scanline" />
+
+      {/* HUD Corner Markers */}
+      <div className="absolute top-24 left-8 text-cyan-500/30 font-mono text-xs hidden lg:block">
+        [+001.294.59] // TARGET_AUDIT_READY
+      </div>
+      <div className="absolute bottom-12 right-8 text-purple-500/30 font-mono text-xs hidden lg:block">
+        [SYS_MONITOR_ACTIVE] // V.1.0.0
+      </div>
     </div>
   );
 }
@@ -143,7 +234,7 @@ function PassedSection({ checks }: { checks: PassedCheck[] }) {
         </svg>
         <span>{checks.length} Security Check{checks.length !== 1 ? "s" : ""} Passed</span>
         <span className="ml-auto text-[10px] text-emerald-500/60 font-normal uppercase tracking-wider">
-          {open ? "Hide Details" : "View Details"}
+          {open ? "[ - HIDE TELEMETRY ]" : "[ + VIEW TELEMETRY ]"}
         </span>
       </button>
 
@@ -208,7 +299,10 @@ function ScanCard({ result, idx }: { result: ScannerResult; idx: number }) {
                 </div>
               </div>
               <div>
-                <h3 className="text-lg font-bold text-white tracking-tight">{result.scanner}</h3>
+                <div className="flex items-center gap-3">
+                  <h3 className="text-lg font-bold text-white tracking-tight anim-glitch">{result.scanner}</h3>
+                  <SignalWaveform />
+                </div>
                 <p className="text-xs font-mono text-indigo-300/70 mt-1">
                   {v === 0 ? "No vulnerabilities found" : `${v} issue${v !== 1 ? "s" : ""} require attention`} · {p} passed
                 </p>
@@ -456,6 +550,7 @@ export default function HomePage() {
 
             <div className="flex items-center gap-4">
               <span className="text-xs font-mono text-slate-400 hidden md:block">Automated Attack Surface Analyzer</span>
+              <SignalWaveform />
               <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 shadow-[0_0_12px_rgba(16,185,129,0.2)]">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                 <span className="text-[10px] font-mono font-bold text-emerald-300 tracking-widest uppercase">SYSTEM READY</span>
@@ -468,6 +563,11 @@ export default function HomePage() {
       {/* ── HERO SECTION ── */}
       <header className="relative pt-36 pb-20 sm:pt-44 sm:pb-24">
         <div className="relative mx-auto max-w-4xl px-6 text-center">
+          {/* Live Cyber Telemetry Console Widget */}
+          <div className={`transition-all duration-1000 ease-out ${mounted ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}>
+            <CyberTelemetryConsole />
+          </div>
+
           {/* Cyber Shield Badge */}
           <div className={`inline-block mb-6 transition-all duration-1000 ease-out ${mounted ? "opacity-100 scale-100" : "opacity-0 scale-75"}`}>
             <div className="relative">
@@ -526,6 +626,13 @@ export default function HomePage() {
                     placeholder="https://example.com"
                     className="w-full rounded-xl bg-slate-950/80 border border-white/5 pl-12 pr-4 py-4 text-sm font-mono text-white placeholder:text-slate-500 focus:border-cyan-500/50 focus:outline-none transition-all shadow-inner"
                   />
+                  {/* Target Lock Indicator */}
+                  {url && (
+                    <div className="absolute right-3.5 top-1/2 -translate-y-1/2 hidden md:flex items-center gap-1.5 px-2 py-1 rounded bg-cyan-500/10 border border-cyan-500/30 text-[10px] font-mono text-cyan-300">
+                      <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
+                      TARGET_LOCKED
+                    </div>
+                  )}
                 </div>
                 <button
                   id="run-scan-button"
@@ -553,6 +660,11 @@ export default function HomePage() {
               </div>
             </div>
           </form>
+
+          {/* High-Tech Cyber Metrics Bar */}
+          <div className={`transition-all duration-1000 delay-700 ease-out ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            <CyberMetricsBar />
+          </div>
         </div>
       </header>
 
