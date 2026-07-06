@@ -33,15 +33,21 @@ interface ScanResponse {
   findings: ScannerResult[];
 }
 
+interface RecentScan {
+  url: string;
+  score: number;
+  timestamp: string;
+}
+
 /* ================================================================ */
 /*  Severity Badges                                                  */
 /* ================================================================ */
 
 const SEV: Record<string, { bg: string; text: string; border: string; dot: string; label: string }> = {
-  Critical: { bg: "bg-red-500/10", text: "text-red-400", border: "border-red-500/30", dot: "bg-red-500", label: "CRITICAL" },
-  High: { bg: "bg-orange-500/10", text: "text-orange-400", border: "border-orange-500/30", dot: "bg-orange-400", label: "HIGH" },
-  Medium: { bg: "bg-amber-500/10", text: "text-amber-400", border: "border-amber-500/30", dot: "bg-amber-400", label: "MEDIUM" },
-  Low: { bg: "bg-blue-500/10", text: "text-blue-400", border: "border-blue-500/30", dot: "bg-blue-400", label: "LOW" },
+  Critical: { bg: "bg-red-500/15", text: "text-red-400", border: "border-red-500/40", dot: "bg-red-500", label: "CRITICAL" },
+  High: { bg: "bg-orange-500/15", text: "text-orange-400", border: "border-orange-500/40", dot: "bg-orange-400", label: "HIGH" },
+  Medium: { bg: "bg-amber-500/15", text: "text-amber-400", border: "border-amber-500/40", dot: "bg-amber-400", label: "MEDIUM" },
+  Low: { bg: "bg-blue-500/15", text: "text-blue-400", border: "border-blue-500/40", dot: "bg-blue-400", label: "LOW" },
 };
 
 function Badge({ severity }: { severity: string }) {
@@ -167,22 +173,18 @@ function CyberMetricsBar() {
 function AmbientBackground() {
   return (
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden bg-[#030508]" aria-hidden>
-      {/* Cyber Cyan Orb */}
       <div
         className="absolute w-[600px] h-[600px] -top-[150px] -left-[100px] rounded-full opacity-20 anim-float-slow blur-[120px]"
         style={{ background: "radial-gradient(circle, rgba(0,240,255,0.4) 0%, transparent 70%)" }}
       />
-      {/* Electric Violet Orb */}
       <div
         className="absolute w-[550px] h-[550px] top-[30%] -right-[150px] rounded-full opacity-25 anim-float blur-[140px]"
         style={{ background: "radial-gradient(circle, rgba(139,92,246,0.4) 0%, transparent 70%)", animationDelay: "3s" }}
       />
-      {/* Emerald Bottom Orb */}
       <div
         className="absolute w-[500px] h-[500px] -bottom-[150px] left-[25%] rounded-full opacity-15 anim-float-slow blur-[130px]"
         style={{ background: "radial-gradient(circle, rgba(16,185,129,0.3) 0%, transparent 70%)", animationDelay: "6s" }}
       />
-      {/* Subtle Grid Pattern */}
       <div
         className="absolute inset-0 opacity-20"
         style={{
@@ -190,10 +192,8 @@ function AmbientBackground() {
           backgroundSize: "32px 32px",
         }}
       />
-      {/* Techie Laser Scanline */}
       <div className="absolute inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_15px_#00f0ff] opacity-40 anim-scanline" />
 
-      {/* HUD Corner Markers */}
       <div className="absolute top-24 left-8 text-cyan-500/30 font-mono text-xs hidden lg:block">
         [+001.294.59] // TARGET_AUDIT_READY
       </div>
@@ -268,6 +268,42 @@ function PassedSection({ checks }: { checks: PassedCheck[] }) {
 }
 
 /* ================================================================ */
+/*  1-Click Copy Remediation Button                                  */
+/* ================================================================ */
+
+function CopyFixButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+  return (
+    <button
+      onClick={copyToClipboard}
+      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-[11px] font-mono font-bold text-cyan-300 transition-all active:scale-95 cursor-pointer ml-auto shrink-0"
+      title="Copy developer remediation fix to clipboard"
+    >
+      {copied ? (
+        <>
+          <svg className="w-3.5 h-3.5 text-emerald-400 animate-bounce" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+          </svg>
+          <span className="text-emerald-300">COPIED!</span>
+        </>
+      ) : (
+        <>
+          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184" />
+          </svg>
+          <span>COPY FIX</span>
+        </>
+      )}
+    </button>
+  );
+}
+
+/* ================================================================ */
 /*  Scanner Result Card                                              */
 /* ================================================================ */
 
@@ -283,7 +319,6 @@ function ScanCard({ result, idx }: { result: ScannerResult; idx: number }) {
           {/* Section Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-6 border-b border-white/[0.06]">
             <div className="flex items-center gap-4">
-              {/* Glowing Icon */}
               <div className="relative shrink-0">
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 opacity-25 blur-lg" />
                 <div className="relative w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-800 border border-white/10 flex items-center justify-center shadow-inner">
@@ -309,7 +344,6 @@ function ScanCard({ result, idx }: { result: ScannerResult; idx: number }) {
               </div>
             </div>
 
-            {/* Severity Summary Badges */}
             <div className="flex gap-2 flex-wrap sm:justify-end">
               {v === 0 ? (
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-[10px] font-mono font-bold tracking-widest bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
@@ -329,7 +363,6 @@ function ScanCard({ result, idx }: { result: ScannerResult; idx: number }) {
                   key={i}
                   className="rounded-2xl border border-white/10 bg-slate-900/60 p-6 transition-all duration-300 hover:border-white/20 hover:bg-slate-900/80 hover:shadow-xl"
                 >
-                  {/* Title & Badge */}
                   <div className="flex items-start justify-between gap-3 mb-4">
                     <div className="flex items-center gap-3">
                       <span className="w-1 h-6 rounded-full bg-gradient-to-b from-red-500 to-orange-500 shrink-0 shadow-[0_0_8px_rgba(239,68,68,0.6)]" />
@@ -352,21 +385,24 @@ function ScanCard({ result, idx }: { result: ScannerResult; idx: number }) {
                       <p className="text-sm text-slate-300 leading-relaxed">{vuln.description}</p>
                     </div>
 
-                    {/* How to fix */}
+                    {/* How to fix with 1-Click Copy */}
                     <div className="rounded-xl bg-gradient-to-r from-cyan-950/40 to-blue-950/40 border border-cyan-500/20 p-4 shadow-[0_0_20px_rgba(0,240,255,0.05)]">
-                      <div className="flex items-start gap-3">
-                        <div className="w-7 h-7 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center shrink-0 mt-0.5">
-                          <svg className="w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.049.58.025 1.194-.14 1.743" />
-                          </svg>
-                        </div>
-                        <div>
-                          <p className="text-[11px] font-mono font-extrabold uppercase tracking-widest text-cyan-400 mb-1">
+                      <div className="flex items-start justify-between gap-3 mb-2 flex-wrap">
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center shrink-0">
+                            <svg className="w-3.5 h-3.5 text-cyan-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.049.58.025 1.194-.14 1.743" />
+                            </svg>
+                          </div>
+                          <span className="text-[11px] font-mono font-extrabold uppercase tracking-widest text-cyan-400">
                             How To Fix It (Developer Remediation)
-                          </p>
-                          <p className="text-sm text-cyan-100/90 leading-relaxed font-mono">{vuln.remediation}</p>
+                          </span>
                         </div>
+                        <CopyFixButton text={vuln.remediation} />
                       </div>
+                      <p className="text-sm text-cyan-100/90 leading-relaxed font-mono mt-2 bg-black/30 p-3 rounded-lg border border-cyan-500/10">
+                        {vuln.remediation}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -374,7 +410,6 @@ function ScanCard({ result, idx }: { result: ScannerResult; idx: number }) {
             </div>
           )}
 
-          {/* Passed Section */}
           <PassedSection checks={result.passed} />
         </div>
       </div>
@@ -402,20 +437,16 @@ function ScanningRadar() {
 
   return (
     <div className="flex flex-col items-center justify-center py-20 gap-8 anim-scale-in">
-      {/* High-Tech Radar */}
       <div className="relative w-36 h-36 flex items-center justify-center">
-        {/* Outer Pulsing Rings */}
         <div className="absolute inset-0 rounded-full border border-cyan-500/20 anim-ping-ring" />
         <div className="absolute inset-2 rounded-full border border-blue-500/30 anim-ping-ring" style={{ animationDelay: "0.8s" }} />
 
-        {/* Static Sonar Grid */}
         <div className="absolute inset-4 rounded-full border border-white/10 bg-slate-950/80 shadow-2xl" />
         <div className="absolute inset-10 rounded-full border border-white/10" />
         <div className="absolute inset-16 rounded-full border border-white/10" />
         <div className="absolute w-full h-[1px] bg-white/10" />
         <div className="absolute h-full w-[1px] bg-white/10" />
 
-        {/* Rotating Radar Sweep */}
         <div className="absolute inset-4 rounded-full overflow-hidden anim-radar">
           <div
             className="absolute top-0 right-0 w-1/2 h-1/2 origin-bottom-left"
@@ -425,15 +456,12 @@ function ScanningRadar() {
           />
         </div>
 
-        {/* Center Node */}
         <div className="relative w-4 h-4 rounded-full bg-cyan-400 shadow-[0_0_20px_#00f0ff] animate-pulse" />
 
-        {/* Sonar Blips */}
         <div className="absolute top-[25%] left-[65%] w-2 h-2 rounded-full bg-red-400 shadow-[0_0_10px_#f87171] animate-ping" style={{ animationDuration: "3s" }} />
         <div className="absolute top-[65%] left-[30%] w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_10px_#34d399] animate-ping" style={{ animationDuration: "4s", animationDelay: "1s" }} />
       </div>
 
-      {/* Terminal Log Output */}
       <div className="text-center space-y-3 max-w-md">
         <h3 className="text-xl font-bold font-mono text-white tracking-tight flex items-center justify-center gap-2">
           <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
@@ -443,13 +471,80 @@ function ScanningRadar() {
           <p className="animate-pulse">&gt; {steps[step]}</p>
         </div>
 
-        {/* Indeterminate Bar */}
         <div className="w-64 h-1.5 rounded-full bg-white/10 mx-auto overflow-hidden">
           <div
             className="h-full w-1/3 rounded-full bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500"
             style={{ animation: "float 1.5s ease-in-out infinite alternate" }}
           />
         </div>
+      </div>
+    </div>
+  );
+}
+
+/* ================================================================ */
+/*  Help / FAQ Drawer Modal                                          */
+/* ================================================================ */
+
+function HelpDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-end bg-black/70 backdrop-blur-sm anim-fade-in">
+      <div className="w-full max-w-md h-full bg-slate-950 border-l border-cyan-500/30 p-6 sm:p-8 overflow-y-auto shadow-2xl flex flex-col justify-between">
+        <div className="space-y-6">
+          <div className="flex items-center justify-between pb-4 border-b border-white/10">
+            <div className="flex items-center gap-2.5">
+              <span className="w-3 h-3 rounded-full bg-cyan-400 shadow-[0_0_10px_#00f0ff]" />
+              <h3 className="text-lg font-mono font-black text-white tracking-tight">HOW SURFACECHECK WORKS</h3>
+            </div>
+            <button
+              onClick={onClose}
+              className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors cursor-pointer"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <div className="space-y-5 text-sm font-mono text-slate-300 leading-relaxed">
+            <div className="rounded-xl bg-cyan-500/5 border border-cyan-500/20 p-4">
+              <h4 className="font-bold text-cyan-400 mb-1">🛡️ What is this tool?</h4>
+              <p className="text-xs text-slate-300">
+                SurfaceCheck is an automated vulnerability auditing platform. It evaluates website targets for missing HTTP security headers and open TCP network ports.
+              </p>
+            </div>
+
+            <div className="rounded-xl bg-blue-500/5 border border-blue-500/20 p-4">
+              <h4 className="font-bold text-blue-400 mb-1">🔍 Why do HTTP Headers matter?</h4>
+              <p className="text-xs text-slate-300">
+                Headers like HSTS, Content Security Policy (CSP), and X-Frame-Options instruct browsers on how to handle data securely, preventing Cross-Site Scripting (XSS), clickjacking, and man-in-the-middle attacks.
+              </p>
+            </div>
+
+            <div className="rounded-xl bg-purple-500/5 border border-purple-500/20 p-4">
+              <h4 className="font-bold text-purple-400 mb-1">⚡ Why do TCP Ports matter?</h4>
+              <p className="text-xs text-slate-300">
+                Exposed ports like Telnet (23), FTP (21), or MySQL (3306) can allow unauthorized hackers to brute-force or intercept sensitive server telemetry.
+              </p>
+            </div>
+
+            <div className="rounded-xl bg-emerald-500/5 border border-emerald-500/20 p-4">
+              <h4 className="font-bold text-emerald-400 mb-1">📑 How to use the PDF Report?</h4>
+              <p className="text-xs text-slate-300">
+                Click &quot;Download PDF Report&quot; after any scan to generate an executive-ready audit document to share with your software engineering or DevOps teams.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <button
+          onClick={onClose}
+          className="w-full mt-8 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 font-mono font-extrabold text-xs tracking-wider uppercase hover:opacity-90 transition-opacity cursor-pointer shadow-lg"
+        >
+          CLOSE GUIDE
+        </button>
       </div>
     </div>
   );
@@ -467,12 +562,28 @@ export default function HomePage() {
   const [scannedUrl, setScannedUrl] = useState("");
   const [downloading, setDownloading] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [filterSeverity, setFilterSeverity] = useState<string>("ALL");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [recentScans, setRecentScans] = useState<RecentScan[]>([]);
+  const [helpOpen, setHelpOpen] = useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    setMounted(true);
+    const saved = localStorage.getItem("surfacecheck_recents");
+    if (saved) {
+      try { setRecentScans(JSON.parse(saved)); } catch {}
+    }
+  }, []);
 
-  async function handleScan(e: FormEvent) {
-    e.preventDefault();
+  const saveToRecents = (target: string, sc: number) => {
+    const item: RecentScan = { url: target, score: sc, timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
+    const updated = [item, ...recentScans.filter(r => r.url !== target)].slice(0, 5);
+    setRecentScans(updated);
+    localStorage.setItem("surfacecheck_recents", JSON.stringify(updated));
+  };
+
+  async function executeScan(targetUrl: string) {
     setError(null);
     setResults(null);
     setLoading(true);
@@ -480,7 +591,7 @@ export default function HomePage() {
       const res = await fetch("/api/v1/scan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ target_url: url }),
+        body: JSON.stringify({ target_url: targetUrl }),
       });
       if (!res.ok) {
         const b = await res.json().catch(() => null);
@@ -488,13 +599,24 @@ export default function HomePage() {
       }
       const data: ScanResponse = await res.json();
       setResults(data.findings);
-      setScannedUrl(url);
+      setScannedUrl(targetUrl);
+
+      const totV = data.findings.reduce((s, r) => s + r.vulnerabilities.length, 0);
+      const totP = data.findings.reduce((s, r) => s + r.passed.length, 0);
+      const sc = Math.round((totP / Math.max(totV + totP, 1)) * 100);
+      saveToRecents(targetUrl, sc);
+
       setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong while connecting to the scan server.");
     } finally {
       setLoading(false);
     }
+  }
+
+  async function handleScan(e: FormEvent) {
+    e.preventDefault();
+    await executeScan(url);
   }
 
   async function handleDownload() {
@@ -526,9 +648,33 @@ export default function HomePage() {
   const totalP = results?.reduce((s, r) => s + r.passed.length, 0) ?? 0;
   const score = results ? Math.round((totalP / Math.max(totalV + totalP, 1)) * 100) : 0;
 
+  // Filtered Results
+  const filteredResults = results?.map(r => ({
+    ...r,
+    vulnerabilities: r.vulnerabilities.filter(v => {
+      const matchesSev = filterSeverity === "ALL" || 
+        (filterSeverity === "CRITICAL_HIGH" && (v.severity === "Critical" || v.severity === "High")) ||
+        (filterSeverity === "MEDIUM_LOW" && (v.severity === "Medium" || v.severity === "Low"));
+      const matchesSearch = !searchQuery || 
+        (v.header ?? "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (v.service ?? "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+        v.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        v.remediation.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesSev && matchesSearch;
+    })
+  }));
+
+  const sampleTargets = [
+    { label: "Vercel", url: "https://vercel.com", icon: "▲" },
+    { label: "Cloudflare", url: "https://cloudflare.com", icon: "☁️" },
+    { label: "Stripe", url: "https://stripe.com", icon: "💳" },
+    { label: "GitHub", url: "https://github.com", icon: "🐙" },
+  ];
+
   return (
     <div className="min-h-screen relative font-sans text-slate-100 bg-[#030508] bg-gradient-to-b from-[#0a0f1d] via-[#030508] to-[#010204] overflow-hidden">
       <AmbientBackground />
+      <HelpDrawer open={helpOpen} onClose={() => setHelpOpen(false)} />
 
       {/* ── TOP NAVBAR ── */}
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
@@ -549,7 +695,15 @@ export default function HomePage() {
             </div>
 
             <div className="flex items-center gap-4">
-              <span className="text-xs font-mono text-slate-400 hidden md:block">Automated Attack Surface Analyzer</span>
+              <button
+                onClick={() => setHelpOpen(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-mono text-cyan-300 hover:text-white transition-all cursor-pointer shadow-sm"
+              >
+                <svg className="w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
+                </svg>
+                <span className="hidden md:inline">HOW IT WORKS</span>
+              </button>
               <SignalWaveform />
               <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 shadow-[0_0_12px_rgba(16,185,129,0.2)]">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -563,12 +717,10 @@ export default function HomePage() {
       {/* ── HERO SECTION ── */}
       <header className="relative pt-36 pb-20 sm:pt-44 sm:pb-24">
         <div className="relative mx-auto max-w-4xl px-6 text-center">
-          {/* Live Cyber Telemetry Console Widget */}
           <div className={`transition-all duration-1000 ease-out ${mounted ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}>
             <CyberTelemetryConsole />
           </div>
 
-          {/* Cyber Shield Badge */}
           <div className={`inline-block mb-6 transition-all duration-1000 ease-out ${mounted ? "opacity-100 scale-100" : "opacity-0 scale-75"}`}>
             <div className="relative">
               <div className="absolute inset-0 rounded-2xl bg-cyan-500/20 blur-xl animate-pulse" />
@@ -581,7 +733,6 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Headline */}
           <h1 className={`text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.1] transition-all duration-1000 ease-out ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             <span className="text-white">Audit Your Attack Surface</span>
             <br />
@@ -593,22 +744,8 @@ export default function HomePage() {
             Get plain-English explanations, real-time risk grading, and downloadable PDF reports.
           </p>
 
-          {/* Feature Badges */}
-          <div className={`mt-8 flex items-center justify-center gap-2.5 flex-wrap transition-all duration-1000 delay-300 ease-out ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-            {[
-              { label: "Nmap TCP Port Analysis", color: "border-red-500/30 text-red-300 bg-red-500/5" },
-              { label: "HTTP Header Inspection", color: "border-cyan-500/30 text-cyan-300 bg-cyan-500/5" },
-              { label: "Plain-English Remediation", color: "border-emerald-500/30 text-emerald-300 bg-emerald-500/5" },
-              { label: "Executive PDF Reports", color: "border-purple-500/30 text-purple-300 bg-purple-500/5" },
-            ].map(f => (
-              <span key={f.label} className={`px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold border shadow-sm ${f.color}`}>
-                ⚡ {f.label}
-              </span>
-            ))}
-          </div>
-
           {/* ── SCANNER FORM ── */}
-          <form onSubmit={handleScan} className={`mt-12 transition-all duration-1000 delay-500 ease-out ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+          <form onSubmit={handleScan} className={`mt-10 transition-all duration-1000 delay-500 ease-out ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             <div className="glow-border max-w-2xl mx-auto">
               <div className="glass-card rounded-[23px] p-2.5 flex flex-col sm:flex-row items-center gap-3">
                 <div className="relative flex-1 w-full group">
@@ -626,7 +763,6 @@ export default function HomePage() {
                     placeholder="https://example.com"
                     className="w-full rounded-xl bg-slate-950/80 border border-white/5 pl-12 pr-4 py-4 text-sm font-mono text-white placeholder:text-slate-500 focus:border-cyan-500/50 focus:outline-none transition-all shadow-inner"
                   />
-                  {/* Target Lock Indicator */}
                   {url && (
                     <div className="absolute right-3.5 top-1/2 -translate-y-1/2 hidden md:flex items-center gap-1.5 px-2 py-1 rounded bg-cyan-500/10 border border-cyan-500/30 text-[10px] font-mono text-cyan-300">
                       <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
@@ -661,7 +797,47 @@ export default function HomePage() {
             </div>
           </form>
 
-          {/* High-Tech Cyber Metrics Bar */}
+          {/* ── 1-CLICK INSTANT SAMPLE TARGETS ── */}
+          <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <span className="text-xs font-mono text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+              1-Click Instant Demo Scans:
+            </span>
+            <div className="flex items-center gap-2 flex-wrap justify-center">
+              {sampleTargets.map(t => (
+                <button
+                  key={t.label}
+                  type="button"
+                  onClick={() => { setUrl(t.url); executeScan(t.url); }}
+                  className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-cyan-500/15 border border-white/10 hover:border-cyan-500/30 text-xs font-mono text-slate-300 hover:text-cyan-300 transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95"
+                >
+                  <span>{t.icon}</span>
+                  <span>{t.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* ── RECENT SCANS STORAGE DRAWER ── */}
+          {recentScans.length > 0 && (
+            <div className="mt-5 flex items-center justify-center gap-2 flex-wrap">
+              <span className="text-xs font-mono text-slate-500">🕒 Recent Audits:</span>
+              {recentScans.map((r, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => { setUrl(r.url); executeScan(r.url); }}
+                  className="px-2.5 py-1 rounded bg-slate-900/80 border border-white/5 hover:border-white/20 text-[11px] font-mono text-slate-400 hover:text-white transition-colors cursor-pointer flex items-center gap-1.5"
+                >
+                  <span className="underline decoration-cyan-500/40">{r.url.replace("https://", "")}</span>
+                  <span className={`font-bold ${r.score >= 70 ? "text-emerald-400" : r.score >= 40 ? "text-amber-400" : "text-red-400"}`}>
+                    ({r.score}%)
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
+
           <div className={`transition-all duration-1000 delay-700 ease-out ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             <CyberMetricsBar />
           </div>
@@ -670,7 +846,6 @@ export default function HomePage() {
 
       {/* ── MAIN RESULTS AREA ── */}
       <main ref={resultsRef} className="relative z-10 mx-auto max-w-4xl px-6 pb-28">
-        {/* Error Notification */}
         {error && (
           <div className="mb-8 rounded-2xl border border-red-500/30 bg-red-950/40 backdrop-blur-md p-6 flex items-start gap-4 shadow-[0_0_30px_rgba(239,68,68,0.15)] anim-scale-in">
             <div className="w-10 h-10 rounded-xl bg-red-500/20 border border-red-500/40 flex items-center justify-center shrink-0">
@@ -685,7 +860,6 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* Live Radar Scanner */}
         {loading && <ScanningRadar />}
 
         {/* Scan Results Dashboard */}
@@ -697,7 +871,6 @@ export default function HomePage() {
                 <div className="glass-card rounded-[23px] p-6 sm:p-8">
                   <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                     <div className="flex items-center gap-6 flex-wrap">
-                      {/* Animated Score Gauge */}
                       <div className="relative w-20 h-20 shrink-0">
                         <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
                           <circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="3.5" />
@@ -730,7 +903,6 @@ export default function HomePage() {
                     </div>
 
                     <div className="flex items-center gap-6 flex-wrap w-full md:w-auto justify-between md:justify-end border-t md:border-t-0 pt-4 md:pt-0 border-white/10">
-                      {/* Stats */}
                       <div className="flex items-center gap-3">
                         <div className="w-11 h-11 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center shadow-[0_0_12px_rgba(239,68,68,0.2)]">
                           <span className="text-lg font-black font-mono text-red-400"><Counter to={totalV} /></span>
@@ -753,7 +925,6 @@ export default function HomePage() {
                         </div>
                       </div>
 
-                      {/* PDF Report Button */}
                       <button
                         id="download-report-button"
                         onClick={handleDownload}
@@ -783,8 +954,43 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Individual Scanner Cards */}
-            {results.map((r, i) => (
+            {/* ── PROFESSIONAL RESULTS FILTER & SEARCH BAR ── */}
+            <div className="rounded-2xl glass-card p-4 border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto">
+                <span className="text-xs font-mono text-slate-400 mr-1">🎛️ Filter:</span>
+                {[
+                  { id: "ALL", label: `All Findings (${totalV})` },
+                  { id: "CRITICAL_HIGH", label: "🚨 Critical & High" },
+                  { id: "MEDIUM_LOW", label: "⚠️ Medium & Low" },
+                ].map(f => (
+                  <button
+                    key={f.id}
+                    onClick={() => setFilterSeverity(f.id)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer ${filterSeverity === f.id ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-[0_0_12px_rgba(0,240,255,0.2)]" : "bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white border border-transparent"}`}
+                  >
+                    {f.label}
+                  </button>
+                ))}
+              </div>
+
+              <div className="relative w-full sm:w-64">
+                <input
+                  type="text"
+                  placeholder="🔍 Search issues (e.g. 'HSTS', '22')..."
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  className="w-full rounded-xl bg-slate-950/80 border border-white/10 px-3.5 py-2 text-xs font-mono text-white placeholder:text-slate-500 focus:border-cyan-500/50 focus:outline-none transition-all shadow-inner"
+                />
+                {searchQuery && (
+                  <button onClick={() => setSearchQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs">
+                    ✕
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Filtered Scanner Cards */}
+            {filteredResults?.map((r, i) => (
               <ScanCard key={i} result={r} idx={i} />
             ))}
           </div>
@@ -800,11 +1006,41 @@ export default function HomePage() {
             </div>
             <h3 className="text-lg font-mono font-bold text-white tracking-tight">Ready for Security Inspection</h3>
             <p className="text-slate-400 text-sm font-mono mt-2 max-w-sm mx-auto">
-              Enter any target web address above to initiate an automated attack surface evaluation.
+              Enter any target web address above or select a 1-Click Demo target to initiate an automated attack surface evaluation.
             </p>
           </div>
         )}
       </main>
+
+      {/* ── STICKY FLOATING QUICK-ACTION BAR ── */}
+      {results && !loading && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-lg px-4 anim-fade-up">
+          <div className="glass-card rounded-2xl p-3 border border-cyan-500/40 shadow-[0_10px_40px_rgba(0,0,0,0.8)] flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
+              <span className="text-xs font-mono font-bold text-white truncate">{scannedUrl.replace("https://", "")}</span>
+              <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-black ${score >= 70 ? "bg-emerald-500/20 text-emerald-300" : score >= 40 ? "bg-amber-500/20 text-amber-300" : "bg-red-500/20 text-red-300"}`}>
+                {score}%
+              </span>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-mono font-bold text-white transition-all cursor-pointer"
+              >
+                ⬆️ TOP
+              </button>
+              <button
+                onClick={handleDownload}
+                disabled={downloading}
+                className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-mono font-extrabold text-xs transition-all cursor-pointer shadow-md disabled:opacity-40"
+              >
+                {downloading ? "PDF..." : "📑 PDF REPORT"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── FOOTER ── */}
       <footer className="relative z-10 border-t border-white/5 bg-slate-950/60 backdrop-blur-md">
